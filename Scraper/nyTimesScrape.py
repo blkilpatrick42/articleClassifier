@@ -23,11 +23,18 @@ for link in soup.find_all('a'):
       r = requests.get(link.get('href'))
       new_data = r.text
       article = BeautifulSoup(new_data)
-      if article.find('h1',{'class':'headline'}).get_text() in articleList:
+      print(link.get('href'))
+      try:
+         if article.find('h1',{'class':'headline'}).get_text() in articleList:
+            continue
+         else:
+            articleList.append(article.find('h1',{'class':'headline'}).get_text())
+            f.write(articleList[-1])
+            f.write(' ')
+            for each_p in article.findAll('p',{'class':'story-body-text story-content'}):
+               f.write(each_p.get_text())
+            f.write('\n')
+      except:
          continue
-      else:
-         articleList.append(article.find('h1',{'class':'headline'}).get_text())
-         f.write(articleList[-1])
-         for each_p in article.findAll('p',{'class':'story-body-text story-content'}):
-            f.write(each_p.get_text())
-         f.write('\n')
+
+f.close()
