@@ -15,11 +15,14 @@ class urlScraper:
         
     def getSoup(url):
         soup = None
-        request = urllib.request.Request(url)
-        with urllib.request.urlopen(request) as page:
-            html = page.read()
-            soup = BeautifulSoup(html, 'html.parser')
-        return soup
+        try:
+            request = urllib.request.Request(url)
+            with urllib.request.urlopen(request) as page:
+                html = page.read()
+                soup = BeautifulSoup(html, 'html.parser')
+            return soup
+        except:
+            raise ValueError('Error getting page/soup')
     
     def getText(self):
         soup = self.soup
@@ -104,10 +107,10 @@ for file in [todoFile, visitedFile, datasetFile]:
         open(file, 'w').close()
     
 onlyFound = True
-count = 5
-#while count:
-#    count -=1
-while os.path.getsize(todoFile) != 0:
+count = 10
+while count:
+    count -=1
+#while os.path.getsize(todoFile) != 0:
     visited = []
     todo = []
     for line in open(visitedFile, 'r'):
@@ -126,7 +129,10 @@ while os.path.getsize(todoFile) != 0:
             print('{} not found in visited'.format(url))
             onlyFound = False
             #print('process {}'.format(url))########################################
-            obj = urlScraper(url)
+            try:
+                obj = urlScraper(url)
+            except:
+                pass
             with open(datasetFile, 'a') as f:
                 try:
                     f.write(str(obj.text))
@@ -136,7 +142,12 @@ while os.path.getsize(todoFile) != 0:
             bisect.insort(visited, url) #insert into visited
             todo.extend(obj.links)
             with open(todoFile, 'w') as f:
-                f.write('\n'.join(todo))
+                todoPruned = []
+                for line in todo:
+                    #print('link is {}'.format(line))
+                    if index(visited, line) == -1:
+                        todoPruned.append(line)
+                f.write('\n'.join(todoPruned))
             with open(visitedFile, 'w') as f:
                 f.write('\n'.join(visited))
             break
