@@ -4,7 +4,7 @@ import requests
 
 import re
 
-regex = re.compile('https://www.foxnews.com/*')
+regex = re.compile('foxnews.com/*/2017/*')
 
 articleList = []
 
@@ -23,7 +23,7 @@ maxArticles = 10000;
 i = 0;
 
 for link in soup.find_all('a'):
-#   if re.match(regex,link.get('href')):
+#   if re.search(regex,link.get('href')):
       try:
          r = requests.get(link.get('href'))
          new_data = r.text
@@ -41,10 +41,10 @@ for link in soup.find_all('a'):
             articleList.append(article.find('h1',{'class':'headline head1'}).get_text())
             f.write(articleList[-1])
             f.write(' ')
-            for each_p in article.findAll('p'): 
-               f.write(' ')
+            for each_p in article.findAll('div', attrs={'class':'article-body'}): 
+#               f.write(' ')
                f.write(each_p.get_text())
-               f.write(' ')
+#               f.write(' ')
             f.write('\n')
       except:
          continue
