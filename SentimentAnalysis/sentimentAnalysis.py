@@ -23,8 +23,8 @@ elif int(dataset) == 4:
    f = open('../Datasets/clean_bbc_dataset','r')
    articleList = open('../Datasets/clean_bbc_dataset').readlines()
 elif int(dataset) == 5:
-   f = open('../Datasets/aljDataset','r')
-   articleList = open('../Datasets/aljDataset').readlines()
+   f = open('../Datasets/clean_alj_dataset','r')
+   articleList = open('../Datasets/clean_alj_dataset').readlines()
 
 term = input("Query For Term: ")
 regex = re.compile(r"([^.]*? "+term+" [^.]*\.)")
